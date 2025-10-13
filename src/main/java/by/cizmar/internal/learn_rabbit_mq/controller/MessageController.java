@@ -6,9 +6,11 @@ import by.cizmar.internal.learn_rabbit_mq.service.MessageProducer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,24 +25,27 @@ public class MessageController {
 
     private final MessageProducer messageProducer;
 
-    @PostMapping("/simple-connection")
+    @PostMapping("/simple-connection/{sendDirect}")
     @Operation(summary = "Send SimpleConnection (String) message")
-    public ResponseEntity<String> sendSimpleConnectionMessage(@Valid @RequestBody String message) {
-        messageProducer.sendSimpleConnectionMessage(message);
+    public ResponseEntity<String> sendSimpleConnectionMessage(@Valid @RequestBody String message,
+                                                              @PathVariable @NotNull Boolean sendDirect) {
+        messageProducer.sendSimpleConnectionMessage(message, sendDirect);
         return ResponseEntity.ok("Simple message sent: %s".formatted(message));
     }
 
-    @PostMapping("/event-tickets")
-    @Operation(summary = "Send EventTickets message")
-    public ResponseEntity<String> sendEventTicketsMessage(@Valid @RequestBody EventTicketsPayload payload) {
-        messageProducer.sendEventTicketsMessage(payload);
+    @PostMapping("/event-tickets/{sendDirect}")
+    @Operation(summary = "Send EventTickets (JSON) message")
+    public ResponseEntity<String> sendEventTicketsMessage(@Valid @RequestBody EventTicketsPayload payload,
+                                                          @PathVariable @NotNull Boolean sendDirect) {
+        messageProducer.sendEventTicketsMessage(payload, sendDirect);
         return ResponseEntity.ok("Message UUID: %s".formatted(payload.getEventUuid()));
     }
 
-    @PostMapping("/vendor-events")
-    @Operation(summary = "Send VendorEvents message")
-    public ResponseEntity<String> sendVendorEventsMessage(@Valid @RequestBody VendorEventsPayload payload) {
-        messageProducer.sendVendorEventsMessage(payload);
+    @PostMapping("/vendor-events/{sendDirect}")
+    @Operation(summary = "Send VendorEvents (JSON) message")
+    public ResponseEntity<String> sendVendorEventsMessage(@Valid @RequestBody VendorEventsPayload payload,
+                                                          @PathVariable @NotNull Boolean sendDirect) {
+        messageProducer.sendVendorEventsMessage(payload, sendDirect);
         return ResponseEntity.ok("Message UUID: %s".formatted(payload.getEventUuid()));
     }
 

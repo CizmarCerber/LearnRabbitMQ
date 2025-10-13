@@ -12,8 +12,10 @@ public final class AppConstants {
     public static final String JSON_RABBIT_CONTAINER_FACTORY = "jsonRabbitContainerFactory";
     public static final String STRING_RABBIT_CONTAINER_FACTORY = "stringRabbitContainerFactory";
 
-    public static final String SIMPLE_CONNECTION_QUEUE = "simple-connection-queue";
-    public static final String VENDOR_EVENTS_QUEUE = "vendor-events-queue";
-    public static final String EVENT_TICKETS_QUEUE = "event-tickets-queue";
+    public static final String DIRECT_EXCHANGE = "cizmar.direct";
+    public static final String ROUTING_SIMPLE = "simple";
+    public static final String ROUTING_VENDOR_EVENTS = "vendor-events";
+    public static final String ROUTING_EVENT_TICKETS = "event-tickets";
+
 
 }
