@@ -1,5 +1,9 @@
 package by.cizmar.internal.learn_rabbit_mq.config;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -24,6 +28,26 @@ public class RabbitMQConfiguration {
     @Bean
     public MessageConverter stringMessageConverter() {
         return new SimpleMessageConverter();
+    }
+
+    @Bean
+    public DirectExchange exchange() {
+        return new DirectExchange(AppConstants.DIRECT_EXCHANGE);
+    }
+
+    @Bean
+    public Binding bindingDirectSimple(Queue simpleConnectionQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(simpleConnectionQueue).to(exchange).with(AppConstants.ROUTING_SIMPLE);
+    }
+
+    @Bean
+    public Binding bindingDirectVendorEvents(Queue vendorEventsQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(vendorEventsQueue).to(exchange).with(AppConstants.ROUTING_VENDOR_EVENTS);
+    }
+
+    @Bean
+    public Binding bindingDirectEventTickets(Queue eventTicketsQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(eventTicketsQueue).to(exchange).with(AppConstants.ROUTING_EVENT_TICKETS);
     }
 
     @Bean(AppConstants.STRING_RABBIT_TEMPLATE)

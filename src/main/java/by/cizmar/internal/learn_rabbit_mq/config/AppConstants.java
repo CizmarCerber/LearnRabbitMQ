@@ -12,4 +12,10 @@ public final class AppConstants {
     public static final String JSON_RABBIT_CONTAINER_FACTORY = "jsonRabbitContainerFactory";
     public static final String STRING_RABBIT_CONTAINER_FACTORY = "stringRabbitContainerFactory";
 
+    public static final String DIRECT_EXCHANGE = "cizmar.direct";
+    public static final String ROUTING_SIMPLE = "simple";
+    public static final String ROUTING_VENDOR_EVENTS = "vendor-events";
+    public static final String ROUTING_EVENT_TICKETS = "event-tickets";
+
+
 }

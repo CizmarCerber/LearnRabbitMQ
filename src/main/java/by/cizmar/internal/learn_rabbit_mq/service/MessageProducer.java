@@ -23,18 +23,30 @@ public class MessageProducer {
 
     private final QueueConfiguration queueConfiguration;
 
-    public void sendSimpleConnectionMessage(Object message) {
+    public void sendSimpleConnectionMessage(Object message, Boolean sendDirect) {
         log.info(LOG_MESSAGE, queueConfiguration.getSimpleConnection(), message);
-        simpleRabbitTemplate.convertAndSend(queueConfiguration.getSimpleConnection(), message);
+        if (Boolean.TRUE.equals(sendDirect)) {
+            simpleRabbitTemplate.convertAndSend(AppConstants.DIRECT_EXCHANGE, AppConstants.ROUTING_SIMPLE, message);
+        } else {
+            simpleRabbitTemplate.convertAndSend(queueConfiguration.getSimpleConnection(), message);
+        }
     }
 
-    public void sendVendorEventsMessage(Object message) {
+    public void sendVendorEventsMessage(Object message, Boolean sendDirect) {
         log.info(LOG_MESSAGE, queueConfiguration.getVendorEvents(), message);
-        jsonRabbitTemplate.convertAndSend(queueConfiguration.getVendorEvents(), message);
+        if (Boolean.TRUE.equals(sendDirect)) {
+            jsonRabbitTemplate.convertAndSend(AppConstants.DIRECT_EXCHANGE, AppConstants.ROUTING_VENDOR_EVENTS, message);
+        } else {
+            jsonRabbitTemplate.convertAndSend(queueConfiguration.getVendorEvents(), message);
+        }
     }
 
-    public void sendEventTicketsMessage(Object message) {
+    public void sendEventTicketsMessage(Object message, Boolean sendDirect) {
         log.info(LOG_MESSAGE, queueConfiguration.getEventTickets(), message);
-        jsonRabbitTemplate.convertAndSend(queueConfiguration.getEventTickets(), message);
+        if (Boolean.TRUE.equals(sendDirect)) {
+            jsonRabbitTemplate.convertAndSend(AppConstants.DIRECT_EXCHANGE, AppConstants.ROUTING_EVENT_TICKETS, message);
+        } else {
+            jsonRabbitTemplate.convertAndSend(queueConfiguration.getEventTickets(), message);
+        }
     }
 }
