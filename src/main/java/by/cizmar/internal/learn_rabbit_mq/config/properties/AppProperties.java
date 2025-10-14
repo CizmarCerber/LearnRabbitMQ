@@ -11,6 +11,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "by.cizmar.internal.learn-rabbit-mq")
 public class AppProperties {
     private ExchangeProperties exchange;
-    private QueuePropetries queue;
+    private QueueProperties queue;
     private RoutingProperties routing;
 }

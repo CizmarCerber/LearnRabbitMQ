@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -40,28 +42,63 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public Queue simpleConnectionQueue() {
-        return new Queue(appProperties.getQueue().getSimpleConnection(), false);
+    public Queue simpleStringQueue() {
+        return QueueBuilder.durable(appProperties.getQueue().getSimpleString())
+                .withArgument("x-dead-letter-exchange", appProperties.getExchange().getFanoutDlx())
+                .build();
+    }
+
+    @Bean
+    public Queue simpleIntegerQueue() {
+        return QueueBuilder.durable(appProperties.getQueue().getSimpleInteger())
+                .withArgument("x-dead-letter-exchange", appProperties.getExchange().getFanoutDlx())
+                .build();
     }
 
     @Bean
     public Queue vendorEventsQueue() {
-        return new Queue(appProperties.getQueue().getVendorEvents(), false);
+        return QueueBuilder.durable(appProperties.getQueue().getVendorEvents())
+                .withArgument("x-dead-letter-exchange", appProperties.getExchange().getFanoutDlx())
+                .build();
     }
 
     @Bean
     public Queue eventTicketsQueue() {
-        return new Queue(appProperties.getQueue().getEventTickets(), false);
+        return QueueBuilder.durable(appProperties.getQueue().getEventTickets())
+                .withArgument("x-dead-letter-exchange", appProperties.getExchange().getFanoutDlx())
+                .build();
     }
 
     @Bean
-    public DirectExchange exchange() {
+    public Queue manualAckQueue() {
+        return QueueBuilder.durable(appProperties.getQueue().getManualAck())
+                .withArgument("x-dead-letter-exchange", appProperties.getExchange().getFanoutDlx())
+                .build();
+    }
+
+    @Bean
+    public Queue deadLetterQueue() {
+        return QueueBuilder.durable(appProperties.getQueue().getDlq()).build();
+    }
+
+    @Bean
+    public DirectExchange directExchange() {
         return new DirectExchange(appProperties.getExchange().getDirect());
     }
 
     @Bean
-    public Binding bindingDirectSimple(Queue simpleConnectionQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(simpleConnectionQueue).to(exchange).with(appProperties.getRouting().getSimpleConnection());
+    public FanoutExchange fanoutDlxExchange() {
+        return new FanoutExchange(appProperties.getExchange().getFanoutDlx());
+    }
+
+    @Bean
+    public Binding bindingDirectSimpleString(Queue simpleStringQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(simpleStringQueue).to(exchange).with(appProperties.getRouting().getSimpleString());
+    }
+
+    @Bean
+    public Binding bindingDirectSimpleInteger(Queue simpleIntegerQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(simpleIntegerQueue).to(exchange).with(appProperties.getRouting().getSimpleInteger());
     }
 
     @Bean
@@ -72,6 +109,11 @@ public class RabbitMQConfiguration {
     @Bean
     public Binding bindingDirectEventTickets(Queue eventTicketsQueue, DirectExchange exchange) {
         return BindingBuilder.bind(eventTicketsQueue).to(exchange).with(appProperties.getRouting().getEventTickets());
+    }
+
+    @Bean
+    public Binding deadLetterBinding(Queue deadLetterQueue, FanoutExchange fanoutDlxExchange) {
+        return BindingBuilder.bind(deadLetterQueue).to(fanoutDlxExchange);
     }
 
     @Bean(AppConstants.STRING_RABBIT_TEMPLATE)
