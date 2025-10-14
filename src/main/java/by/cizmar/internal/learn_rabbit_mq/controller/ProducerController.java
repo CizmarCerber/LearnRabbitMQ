@@ -19,18 +19,26 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Message")
-@RequestMapping(value = "/api/v1/messages")
-public class MessageController {
+@Tag(name = "Producer")
+@RequestMapping(value = "/api/v1/produce")
+public class ProducerController {
 
     private final MessageProducer messageProducer;
 
-    @PostMapping("/simple-connection/{sendDirect}")
-    @Operation(summary = "Send SimpleConnection (String) message")
-    public ResponseEntity<String> sendSimpleConnectionMessage(@Valid @RequestBody String message,
-                                                              @PathVariable @NotNull Boolean sendDirect) {
-        messageProducer.sendSimpleConnectionMessage(message, sendDirect);
-        return ResponseEntity.ok("Simple message sent: %s".formatted(message));
+    @PostMapping("/simple/string/{sendDirect}")
+    @Operation(summary = "Send Simple (String) message")
+    public ResponseEntity<String> sendSimpleStringMessage(@Valid @RequestBody String message,
+                                                          @PathVariable @NotNull Boolean sendDirect) {
+        messageProducer.sendSimpleStringMessage(message, sendDirect);
+        return ResponseEntity.ok("Simple String message sent: %s".formatted(message));
+    }
+
+    @PostMapping("/simple/integer/{sendDirect}")
+    @Operation(summary = "Send Simple (Integer) message - redirected to DLQ if can't parse as Integer")
+    public ResponseEntity<String> sendSimpleIntegerMessage(@Valid @RequestBody Object message,
+                                                           @PathVariable @NotNull Boolean sendDirect) {
+        messageProducer.sendSimpleIntegerMessage(message, sendDirect);
+        return ResponseEntity.ok("Simple Integer message sent: %s".formatted(message));
     }
 
     @PostMapping("/event-tickets/{sendDirect}")
@@ -49,4 +57,10 @@ public class MessageController {
         return ResponseEntity.ok("Message UUID: %s".formatted(payload.getEventUuid()));
     }
 
+    @PostMapping("/manual-nack")
+    @Operation(summary = "Send ManualAck (String) message - should Nack and requeue to DLQ if message not instanceof Integer")
+    public ResponseEntity<String> sendManualAckMessage(@RequestBody Object message) {
+        messageProducer.sendManualAckMessage(message);
+        return ResponseEntity.ok("ManualAck message sent: %s".formatted(message));
+    }
 }

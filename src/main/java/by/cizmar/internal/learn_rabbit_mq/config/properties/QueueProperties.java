@@ -5,10 +5,13 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class QueuePropetries {
+public class QueueProperties {
 
-    private String simpleConnection;
+    private String simpleString;
+    private String simpleInteger;
     private String vendorEvents;
     private String eventTickets;
+    private String manualAck;
+    private String dlq;
 
 }

@@ -6,7 +6,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class RoutingProperties {
-    private String simpleConnection;
+    private String simpleString;
+    private String simpleInteger;
     private String vendorEvents;
     private String eventTickets;
 }
