@@ -10,4 +10,5 @@ public class RoutingProperties {
     private String simpleInteger;
     private String vendorEvents;
     private String eventTickets;
+    private String scheduled;
 }

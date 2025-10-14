@@ -8,4 +8,5 @@ import lombok.Setter;
 public class ExchangeProperties {
     private String direct;
     private String fanoutDlx;
+    private String scheduledFanout;
 }

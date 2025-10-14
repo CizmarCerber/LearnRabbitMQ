@@ -22,47 +22,60 @@ public class MessageProducer {
     private final AppProperties appProperties;
 
     public void sendSimpleStringMessage(Object message, Boolean sendDirect) {
-        logMessageSentToQueue(appProperties.getQueue().getSimpleString(), message);
         if (Boolean.TRUE.equals(sendDirect)) {
+            logMessageSentToExchangeRoutingKey(message,appProperties.getExchange().getDirect(), appProperties.getRouting().getSimpleString());
             stringRabbitTemplate.convertAndSend(appProperties.getExchange().getDirect(), appProperties.getRouting().getSimpleString(), message);
         } else {
+            logMessageSentToQueue(message, appProperties.getQueue().getSimpleString());
             stringRabbitTemplate.convertAndSend(appProperties.getQueue().getSimpleString(), message);
         }
     }
 
     public void sendSimpleIntegerMessage(Object message, Boolean sendDirect) {
-        logMessageSentToQueue(appProperties.getQueue().getSimpleInteger(), message);
         if (Boolean.TRUE.equals(sendDirect)) {
+            logMessageSentToExchangeRoutingKey(message,appProperties.getExchange().getDirect(), appProperties.getRouting().getSimpleInteger());
             stringRabbitTemplate.convertAndSend(appProperties.getExchange().getDirect(), appProperties.getRouting().getSimpleInteger(), message);
         } else {
+            logMessageSentToQueue(message, appProperties.getQueue().getSimpleInteger());
             stringRabbitTemplate.convertAndSend(appProperties.getQueue().getSimpleInteger(), message);
         }
     }
 
     public void sendVendorEventsMessage(Object message, Boolean sendDirect) {
-        logMessageSentToQueue(appProperties.getQueue().getVendorEvents(), message);
         if (Boolean.TRUE.equals(sendDirect)) {
+            logMessageSentToExchangeRoutingKey(message,appProperties.getExchange().getDirect(), appProperties.getRouting().getVendorEvents());
             jsonRabbitTemplate.convertAndSend(appProperties.getExchange().getDirect(), appProperties.getRouting().getVendorEvents(), message);
         } else {
+            logMessageSentToQueue(message, appProperties.getQueue().getVendorEvents());
             jsonRabbitTemplate.convertAndSend(appProperties.getQueue().getVendorEvents(), message);
         }
     }
 
     public void sendEventTicketsMessage(Object message, Boolean sendDirect) {
-        logMessageSentToQueue(appProperties.getQueue().getEventTickets(), message);
         if (Boolean.TRUE.equals(sendDirect)) {
+            logMessageSentToExchangeRoutingKey(message,appProperties.getExchange().getDirect(), appProperties.getRouting().getEventTickets());
             jsonRabbitTemplate.convertAndSend(appProperties.getExchange().getDirect(), appProperties.getRouting().getEventTickets(), message);
         } else {
+            logMessageSentToQueue(message, appProperties.getQueue().getEventTickets());
             jsonRabbitTemplate.convertAndSend(appProperties.getQueue().getEventTickets(), message);
         }
     }
 
     public void sendManualAckMessage(Object message) {
-        logMessageSentToQueue(appProperties.getQueue().getManualAck(), message);
+        logMessageSentToQueue(message, appProperties.getQueue().getManualAck());
         stringRabbitTemplate.convertAndSend(appProperties.getQueue().getManualAck(), message);
     }
 
-    private void logMessageSentToQueue(String queueName, Object message) {
+    public void sendCustomMessageToExchangeRoutingKey(Object message, String exchange, String routingKey) {
+        logMessageSentToExchangeRoutingKey(message, exchange, routingKey);
+        jsonRabbitTemplate.convertAndSend(exchange, routingKey, message);
+    }
+
+    private void logMessageSentToQueue(Object message, String queueName) {
         log.info("Sending to queue {} message {}", queueName, message);
+    }
+
+    private void logMessageSentToExchangeRoutingKey(Object message, String exchange, String routingKey) {
+        log.info("Sending to exchange [routing] {} [{}] message {}", exchange, routingKey, message);
     }
 }
