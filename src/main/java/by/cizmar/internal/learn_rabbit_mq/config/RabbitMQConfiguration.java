@@ -1,5 +1,9 @@
 package by.cizmar.internal.learn_rabbit_mq.config;
 
+import by.cizmar.internal.learn_rabbit_mq.config.properties.AppProperties;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -17,8 +21,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 
 @SuppressWarnings("unused")
+@Setter
+@Getter
 @Configuration
+@RequiredArgsConstructor
 public class RabbitMQConfiguration {
+
+    private final AppProperties appProperties;
 
     @Bean
     public MessageConverter jsonMessageConverter() {
@@ -31,23 +40,38 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public Queue simpleConnectionQueue() {
+        return new Queue(appProperties.getQueue().getSimpleConnection(), false);
+    }
+
+    @Bean
+    public Queue vendorEventsQueue() {
+        return new Queue(appProperties.getQueue().getVendorEvents(), false);
+    }
+
+    @Bean
+    public Queue eventTicketsQueue() {
+        return new Queue(appProperties.getQueue().getEventTickets(), false);
+    }
+
+    @Bean
     public DirectExchange exchange() {
-        return new DirectExchange(AppConstants.DIRECT_EXCHANGE);
+        return new DirectExchange(appProperties.getExchange().getDirect());
     }
 
     @Bean
     public Binding bindingDirectSimple(Queue simpleConnectionQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(simpleConnectionQueue).to(exchange).with(AppConstants.ROUTING_SIMPLE);
+        return BindingBuilder.bind(simpleConnectionQueue).to(exchange).with(appProperties.getRouting().getSimpleConnection());
     }
 
     @Bean
     public Binding bindingDirectVendorEvents(Queue vendorEventsQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(vendorEventsQueue).to(exchange).with(AppConstants.ROUTING_VENDOR_EVENTS);
+        return BindingBuilder.bind(vendorEventsQueue).to(exchange).with(appProperties.getRouting().getVendorEvents());
     }
 
     @Bean
     public Binding bindingDirectEventTickets(Queue eventTicketsQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(eventTicketsQueue).to(exchange).with(AppConstants.ROUTING_EVENT_TICKETS);
+        return BindingBuilder.bind(eventTicketsQueue).to(exchange).with(appProperties.getRouting().getEventTickets());
     }
 
     @Bean(AppConstants.STRING_RABBIT_TEMPLATE)
