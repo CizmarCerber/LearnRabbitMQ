@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Producer")
-@RequestMapping(value = "/api/v1/produce")
+@RequestMapping(value = "/api/v1/producer")
 public class ProducerController {
 
     private final MessageProducer messageProducer;

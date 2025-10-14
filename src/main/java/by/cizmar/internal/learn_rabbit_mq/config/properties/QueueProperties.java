@@ -12,6 +12,7 @@ public class QueueProperties {
     private String vendorEvents;
     private String eventTickets;
     private String manualAck;
+    private String scheduled;
     private String dlq;
 
 }

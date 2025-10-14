@@ -77,6 +77,13 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public Queue scheduledQueue() {
+        return QueueBuilder.durable(appProperties.getQueue().getScheduled())
+                .withArgument("x-dead-letter-exchange", appProperties.getExchange().getFanoutDlx())
+                .build();
+    }
+
+    @Bean
     public Queue deadLetterQueue() {
         return QueueBuilder.durable(appProperties.getQueue().getDlq()).build();
     }
@@ -84,6 +91,11 @@ public class RabbitMQConfiguration {
     @Bean
     public DirectExchange directExchange() {
         return new DirectExchange(appProperties.getExchange().getDirect());
+    }
+
+    @Bean
+    public FanoutExchange scheduledFanoutExchange() {
+        return new FanoutExchange(appProperties.getExchange().getScheduledFanout());
     }
 
     @Bean
@@ -114,6 +126,11 @@ public class RabbitMQConfiguration {
     @Bean
     public Binding deadLetterBinding(Queue deadLetterQueue, FanoutExchange fanoutDlxExchange) {
         return BindingBuilder.bind(deadLetterQueue).to(fanoutDlxExchange);
+    }
+
+    @Bean
+    public Binding scheduledBinding(Queue scheduledQueue, FanoutExchange scheduledFanoutExchange) {
+        return BindingBuilder.bind(scheduledQueue).to(scheduledFanoutExchange);
     }
 
     @Bean(AppConstants.STRING_RABBIT_TEMPLATE)
