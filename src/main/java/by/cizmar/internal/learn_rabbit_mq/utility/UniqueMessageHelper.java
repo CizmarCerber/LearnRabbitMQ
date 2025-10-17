@@ -21,4 +21,8 @@ public class UniqueMessageHelper {
     public void addToCache(String hash) {
         messageHashes.add(hash);
     }
+
+    public void clearCache() {
+        messageHashes.clear();
+    }
 }

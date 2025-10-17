@@ -5,6 +5,7 @@ import by.cizmar.internal.learn_rabbit_mq.config.properties.AppProperties;
 import by.cizmar.internal.learn_rabbit_mq.dto.request.ProducerTaskChangeRequest;
 import by.cizmar.internal.learn_rabbit_mq.scheduler.task.ProducerTask;
 import by.cizmar.internal.learn_rabbit_mq.scheduler.ScheduledTasksManager;
+import by.cizmar.internal.learn_rabbit_mq.utility.UniqueMessageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,5 +29,9 @@ public class ScheduledMessageProducer {
 
     public void stopProducer() {
         scheduledTasksManager.cancelTaskIfExists(AppConstants.SCHEDULED_PRODUCER_TASK);
+    }
+
+    public void clearCache() {
+        UniqueMessageHelper.getInstance().clearCache();
     }
 }

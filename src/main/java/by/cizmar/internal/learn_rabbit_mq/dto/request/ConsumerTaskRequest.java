@@ -1,6 +1,5 @@
 package by.cizmar.internal.learn_rabbit_mq.dto.request;
 
-import by.cizmar.internal.learn_rabbit_mq.enumeration.PayloadType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProducerTaskChangeRequest {
+public class ConsumerTaskRequest {
     @NotNull
     @Min(1000)
     private Integer periodInMilliseconds;
@@ -20,14 +19,4 @@ public class ProducerTaskChangeRequest {
     @NotNull
     @Min(1)
     private Integer messagesPerPeriod;
-
-    @NotNull
-    @Min(1)
-    private Integer messageLength;
-
-    @NotNull
-    private PayloadType payloadType;
-
-    @NotNull
-    private boolean checkDuplicates;
 }
