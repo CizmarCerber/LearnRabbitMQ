@@ -21,15 +21,21 @@ public class ScheduledProducerController {
 
     private final ScheduledMessageProducer scheduledMessageProducer;
 
-    @PostMapping("/start-producer")
+    @PostMapping("/start")
     @Operation(summary = "Configure scheduler for Producer sending messages and start/restart")
     public void startProducingMessages(@ParameterObject @Valid ProducerTaskChangeRequest request) {
         scheduledMessageProducer.rescheduleProducer(request);
     }
 
-    @PostMapping("/stop-producer")
+    @PostMapping("/stop")
     @Operation(summary = "Stop Producer for sending messages if run")
     public void stopProducingMessages() {
+        scheduledMessageProducer.stopProducer();
+    }
+
+    @PostMapping("/clear-cache")
+    @Operation(summary = "Clear Producer Messages Cache")
+    public void clearProducerMessagesCache() {
         scheduledMessageProducer.stopProducer();
     }
 

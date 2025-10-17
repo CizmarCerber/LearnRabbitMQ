@@ -24,7 +24,7 @@ public class ProducerTask extends RunnableTask {
 
     @Override
     public void run() {
-        log.info("Runnable task {} started with params {}", title, request);
+        log.info("Producer task {} started for request {}", title, request);
         UniqueMessageHelper uniqueMessageHelper = UniqueMessageHelper.getInstance();
         for (int i = 0; i < request.getMessagesPerPeriod(); i++) {
             String randomString = StringUtils.generateRandom(request.getMessageLength());

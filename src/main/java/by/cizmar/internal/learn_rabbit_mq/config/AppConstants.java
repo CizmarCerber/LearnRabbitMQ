@@ -13,7 +13,7 @@ public final class AppConstants {
     public static final String STRING_RABBIT_CONTAINER_FACTORY = "stringRabbitContainerFactory";
 
     public static final String SCHEDULED_PRODUCER_TASK = "scheduled-producer-task";
-    public static final String SCHEDULED_RECEIVER_TASK = "scheduled-receiver-task";
+    public static final String SCHEDULED_CONSUMER_TASK = "scheduled-consumer-task";
     public static final String SCHEDULED_TASK_PREFIX = "QueueScheduler-";
 
 }
