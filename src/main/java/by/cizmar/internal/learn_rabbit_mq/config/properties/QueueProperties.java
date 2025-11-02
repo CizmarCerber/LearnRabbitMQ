@@ -13,6 +13,8 @@ public class QueueProperties {
     private String eventTickets;
     private String manualAck;
     private String scheduled;
+    private String scheduledDedupWith;
+    private String scheduledDedupWithout;
     private String dlq;
 
 }

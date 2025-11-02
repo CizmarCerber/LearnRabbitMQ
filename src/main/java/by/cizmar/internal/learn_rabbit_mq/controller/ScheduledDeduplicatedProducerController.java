@@ -1,7 +1,7 @@
 package by.cizmar.internal.learn_rabbit_mq.controller;
 
 import by.cizmar.internal.learn_rabbit_mq.dto.request.ProducerTaskChangeRequest;
-import by.cizmar.internal.learn_rabbit_mq.service.ScheduledMessageProducer;
+import by.cizmar.internal.learn_rabbit_mq.service.ScheduledDeduplicatedMessageProducer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,28 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "ScheduledNoPluginsProducer")
-@RequestMapping(value = "/api/v1/scheduled-producer")
-public class ScheduledProducerController {
+@Tag(name = "ScheduledDeduplicatedProducer", description = "Send messages with deduplication plugin headers")
+@RequestMapping(value = "/api/v1/scheduled-deduplication-producer")
+public class ScheduledDeduplicatedProducerController {
 
-    private final ScheduledMessageProducer scheduledMessageProducer;
+    private final ScheduledDeduplicatedMessageProducer scheduledDeduplicatedMessageProducer;
 
     @PostMapping("/start")
-    @Operation(summary = "Configure scheduler for Producer sending messages and start/restart")
+    @Operation(summary = "Configure scheduler for DeduplicatedProducer sending messages (to both queues, without+with deduplication) and start/restart")
     public void startProducingMessages(@ParameterObject @Valid ProducerTaskChangeRequest request) {
-        scheduledMessageProducer.rescheduleProducer(request);
+        scheduledDeduplicatedMessageProducer.rescheduleProducer(request);
     }
 
     @PostMapping("/stop")
-    @Operation(summary = "Stop Producer for sending messages if run")
+    @Operation(summary = "Stop DeduplicatedProducer for sending messages if run")
     public void stopProducingMessages() {
-        scheduledMessageProducer.stopProducer();
+        scheduledDeduplicatedMessageProducer.stopProducer();
     }
-
-    @PostMapping("/clear-cache")
-    @Operation(summary = "Clear Producer Messages Cache")
-    public void clearProducerMessagesCache() {
-        scheduledMessageProducer.clearCache();
-    }
-
 }

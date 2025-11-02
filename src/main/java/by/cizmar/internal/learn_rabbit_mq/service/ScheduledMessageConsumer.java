@@ -6,12 +6,10 @@ import by.cizmar.internal.learn_rabbit_mq.dto.request.ConsumerTaskRequest;
 import by.cizmar.internal.learn_rabbit_mq.scheduler.ScheduledTasksManager;
 import by.cizmar.internal.learn_rabbit_mq.scheduler.task.ConsumerTask;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScheduledMessageConsumer {

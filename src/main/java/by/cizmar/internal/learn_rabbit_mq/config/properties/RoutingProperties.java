@@ -11,4 +11,7 @@ public class RoutingProperties {
     private String vendorEvents;
     private String eventTickets;
     private String scheduled;
+    private String scheduledDedupAny;
+    private String scheduledDedupText;
+    private String scheduledDedupJson;
 }

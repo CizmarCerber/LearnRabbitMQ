@@ -24,6 +24,7 @@ public class ConsumerTask extends RunnableTask {
             Object message = messageConsumer.receiveCustomMessageFromQueueImmediately(queue);
             if (message == null) {
                 log.warn("Queue {} is already empty; stop consuming cycle", queue);
+                break;
             }
             if (message instanceof CustomRandomizedPayload payload) {
                 log.info("JSON payload received from {}: {}", queue, payload);

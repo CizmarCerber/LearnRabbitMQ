@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "ScheduledConsumer")
+@Tag(name = "ScheduledNoPluginsConsumer")
 @RequestMapping(value = "/api/v1/scheduled-consumer")
 public class ScheduledConsumerController {
 
