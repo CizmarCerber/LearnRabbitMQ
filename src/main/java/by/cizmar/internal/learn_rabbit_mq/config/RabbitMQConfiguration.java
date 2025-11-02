@@ -10,6 +10,7 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -84,6 +85,22 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public Queue scheduledDedupWithQueue() {
+        return QueueBuilder.durable(appProperties.getQueue().getScheduledDedupWith())
+                .withArgument("x-message-deduplication", true)
+                .withArgument("x-dead-letter-exchange", appProperties.getExchange().getFanoutDlx())
+                .build();
+    }
+
+    @Bean
+    public Queue scheduledDedupWithoutQueue() {
+        return QueueBuilder.durable(appProperties.getQueue().getScheduledDedupWithout())
+                .withArgument("x-message-deduplication", false)
+                .withArgument("x-dead-letter-exchange", appProperties.getExchange().getFanoutDlx())
+                .build();
+    }
+
+    @Bean
     public Queue deadLetterQueue() {
         return QueueBuilder.durable(appProperties.getQueue().getDlq()).build();
     }
@@ -96,6 +113,11 @@ public class RabbitMQConfiguration {
     @Bean
     public FanoutExchange scheduledFanoutExchange() {
         return new FanoutExchange(appProperties.getExchange().getScheduledFanout());
+    }
+
+    @Bean
+    public TopicExchange scheduledDedupTopicExchange() {
+        return new TopicExchange(appProperties.getExchange().getScheduledDedupTopic());
     }
 
     @Bean
@@ -131,6 +153,19 @@ public class RabbitMQConfiguration {
     @Bean
     public Binding scheduledBinding(Queue scheduledQueue, FanoutExchange scheduledFanoutExchange) {
         return BindingBuilder.bind(scheduledQueue).to(scheduledFanoutExchange);
+    }
+
+    @Bean
+    public Binding scheduledDedupWithBinding(Queue scheduledDedupWithQueue, TopicExchange scheduledDedupTopicExchange) {
+        return BindingBuilder.bind(scheduledDedupWithQueue).to(scheduledDedupTopicExchange)
+                .with(appProperties.getRouting().getScheduledDedupAny());
+    }
+
+    @Bean
+    public Binding scheduledDedupWithoutBinding(Queue scheduledDedupWithoutQueue,
+                                                TopicExchange scheduledDedupTopicExchange) {
+        return BindingBuilder.bind(scheduledDedupWithoutQueue).to(scheduledDedupTopicExchange)
+                .with(appProperties.getRouting().getScheduledDedupAny());
     }
 
     @Bean(AppConstants.STRING_RABBIT_TEMPLATE)

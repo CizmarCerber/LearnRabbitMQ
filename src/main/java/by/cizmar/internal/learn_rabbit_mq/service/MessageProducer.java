@@ -4,6 +4,7 @@ import by.cizmar.internal.learn_rabbit_mq.config.AppConstants;
 import by.cizmar.internal.learn_rabbit_mq.config.properties.AppProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,11 @@ public class MessageProducer {
     public void sendCustomMessageToExchangeRoutingKey(Object message, String exchange, String routingKey) {
         logMessageSentToExchangeRoutingKey(message, exchange, routingKey);
         jsonRabbitTemplate.convertAndSend(exchange, routingKey, message);
+    }
+
+    public void sendCustomMessageToExchangeRoutingKey(Object message, String exchange, String routingKey, MessagePostProcessor messagePostProcessor) {
+        logMessageSentToExchangeRoutingKey(message, exchange, routingKey);
+        jsonRabbitTemplate.convertAndSend(exchange, routingKey, message, messagePostProcessor);
     }
 
     private void logMessageSentToQueue(Object message, String queueName) {

@@ -9,4 +9,5 @@ public class ExchangeProperties {
     private String direct;
     private String fanoutDlx;
     private String scheduledFanout;
+    private String scheduledDedupTopic;
 }
